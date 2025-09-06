@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unsere Spenden-Community</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .custom-loader {
+        width: 70px;
+        height: 70px;
+        background: #FFD54F; /* Angepasst an das Farbschema */
+        border-radius: 50px;
+        -webkit-mask: radial-gradient(circle 31px at 50% calc(100% + 13px),#000 95%,#0000) top 4px left 50%,
+          radial-gradient(circle 31px,#000 95%,#0000) center,
+          radial-gradient(circle 31px at 50% -13px,#000 95%,#0000) bottom 4px left 50%,
+          linear-gradient(#000 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        -webkit-mask-repeat: no-repeat;
+        animation: cu10 1.5s infinite;
+    }
+    @keyframes cu10 {
+      0% {
+        -webkit-mask-size: 0 18px,0 18px,0 18px,auto;
+      }
+      16.67% {
+        -webkit-mask-size: 100% 18px,0 18px,0 18px,auto;
+      }
+      33.33% {
+        -webkit-mask-size: 100% 18px,100% 18px,0 18px,auto;
+      }
+      50% {
+        -webkit-mask-size: 100% 18px,100% 18px,100% 18px,auto;
+      }
+      66.67% {
+        -webkit-mask-size: 0 18px,100% 18px,100% 18px,auto;
+      }
+      83.33% {
+        -webkit-mask-size: 0 18px,0 18px,100% 18px,auto;
+      }
+      100% {
+        -webkit-mask-size: 0 18px,0 18px,0 18px,auto;
+      }
+    }
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+    }
+    .animate-pulse-on-hover:hover {
+      animation: pulse 1.5s infinite;
+    }
+    
+    /* --- Q&A Sektion Animationen --- */
+    /* Basis-Stil für den aufklappbaren Inhalt */
+    .accordion-content {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out, opacity 0.3s ease-in;
+    }
+    /* Stil, wenn der Inhalt geöffnet ist */
+    .accordion-content.is-open {
+      max-height: 500px; /* Groß genug für den Inhalt */
+      opacity: 1;
+    }
+    
+    /* Animation für das Symbol (Drehung) */
+    .accordion-toggle span {
+      transition: transform 0.3s ease-in-out;
+    }
+    .accordion-toggle.is-open span {
+      transform: rotate(180deg);
+    }
+
+    /* Animation für den Klick-Effekt der Frage-Box */
+    @keyframes faq-pulse {
+      0% { transform: scale(1); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+      50% { transform: scale(1.01); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+      100% { transform: scale(1); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+    }
+    .faq-item.is-active {
+        animation: faq-pulse 0.4s ease-out;
+    }
+    
+  </style>
+</head>
+<body class="bg-[#FFFBEA] text-[#333] leading-relaxed">
+
+  <!-- Ladebildschirm -->
+  <div id="loader-container" class="fixed inset-0 bg-[#FFFBEA] flex justify-center items-center z-50">
+    <div class="custom-loader"></div>
+  </div>
+
+  <!-- Hauptinhalt der Website (anfangs ausgeblendet) -->
+  <div id="content-container" class="hidden">
+    <!-- Header Section -->
+    <header class="bg-[#FFD54F] text-center p-8 md:p-12 rounded-b-3xl shadow-lg border-b-8 border-[#8D6E63]">
+      <img src="https://i.imgur.com/hNfWmYc.png" alt="Community Logo" class="w-24 h-24 md:w-36 md:h-36 mx-auto mb-4 rounded-full border-4 border-[#8D6E63] p-1 animate-pulse-on-hover">
+      <h1 class="text-3xl md:text-5xl font-bold text-[#8D6E63] mb-2">
+        KleineGabe – GroßerHandel
+      </h1>
+      <p class="text-base md:text-lg text-gray-700 uppercase font-bold text-shadow">
+        Mit wenig viel bewirken
+      </p>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 mt-8 md:mt-12">
+      <!-- Trennlinie über den Boxen -->
+      <hr class="border-t-4 border-[#8D6E63] my-8 rounded-full">
+      
+      <!-- About Section -->
+      <section class="bg-white p-6 md:p-8 rounded-2xl shadow-xl mb-12 transform transition-transform duration-300 hover:scale-[1.01]">
+        <div class="flex items-center space-x-3 mb-4">
+          <div class="bg-[#FFD54F] w-2 h-6 rounded-full"></div>
+          <h2 class="text-2xl md:text-3xl font-semibold text-[#8D6E63]">Über unsere Gemeinschaft</h2>
+        </div>
+        <p class="text-gray-600">
+          بسم الله الرحمن الرحيم
+        </p>
+        <p class="text-gray-800 my-4 text-sm md:text-base">
+          Das Gleichnis derjenigen, die ihren Besitz auf ALLAHs Weg ausgeben, ist das eines Saatkorns, das sieben Ähren wachsen läßt, (und) in jeder Ähre hundert Körner. ALLAH vervielfacht, wem Er will. Und Allah ist Allumfassend und Allwissend.
+        </p>
+        <p class="font-bold text-[#8D6E63] text-sm md:text-base mb-2">1€ Sadaqa:</p>
+        <p class="text-gray-800 text-sm md:text-base">
+          Wir sind eine private Gemeinschaft, die gemeinsam durch kleine, monatliche Beiträge Gutes bewirken möchte. Diese Seite dient ausschließlich zur Präsentation unserer Arbeit, damit wir transparent zeigen können, was wir gemeinsam erreichen wollen in sha ALLAH.
+        </p>
+      </section>
+      
+      <!-- Trennlinie zwischen den Boxen -->
+      <hr class="border-t-4 border-[#8D6E63] my-8 rounded-full">
+
+      <!-- Timeline Section -->
+      <section class="bg-white p-6 md:p-8 rounded-2xl shadow-xl mb-12 transform transition-transform duration-300 hover:scale-[1.01]">
+        <div class="flex items-center space-x-3 mb-4">
+          <div class="bg-[#FFD54F] w-2 h-6 rounded-full"></div>
+          <h2 class="text-2xl md:text-3xl font-semibold text-[#8D6E63]">Unsere Roadmap</h2>
+        </div>
+        <div class="relative pl-8 sm:pl-16">
+          <!-- Timeline Bar -->
+          <div class="absolute left-3 sm:left-7 top-0 bottom-0 w-1 bg-[#FFD54F] rounded-full"></div>
+          <!-- Timeline Item 1: Startpunkt -->
+          <div class="mb-8 relative">
+            <div class="absolute w-6 h-6 sm:w-8 sm:h-8 bg-[#8D6E63] rounded-full -left-3 sm:-left-4 top-0 border-4 border-white shadow-lg flex items-center justify-center text-white font-bold">
+              1
+            </div>
+            <div class="ml-8 sm:ml-12">
+              <h3 class="text-xl md:text-2xl font-bold text-[#8D6E63] mb-1">
+                Start der Community
+              </h3>
+              <p class="text-sm md:text-base text-gray-700">
+                Der offizielle Start unserer Sadaqa-Initiative ist für Rabi' al-Thani 1447 in sha ALLAH geplant. Wir beginnen mit der Sammlung der ersten monatlichen Beiträge.
+              </p>
+            </div>
+          </div>
+          <!-- Timeline Item 2: Nächste Schritte -->
+          <div class="mb-8 relative opacity-50">
+            <div class="absolute w-6 h-6 sm:w-8 sm:h-8 bg-gray-400 rounded-full -left-3 sm:-left-4 top-0 border-4 border-white shadow-lg flex items-center justify-center text-white font-bold">
+              2
+            </div>
+            <div class="ml-8 sm:ml-12">
+              <h3 class="text-xl md:text-2xl font-bold text-gray-500 mb-1">
+                Erstes Projekt
+              </h3>
+              <p class="text-sm md:text-base text-gray-500">
+                Nach dem erfolgreichen Start in sha ALLAH ﷻ, werden wir gemeinsam das erste Projekt auswählen, das wir unterstützen möchten.
+              </p>
+            </div>
+          </div>
+          <!-- Timeline Item 3: Zukunft -->
+          <div class="relative opacity-50">
+            <div class="absolute w-6 h-6 sm:w-8 sm:h-8 bg-gray-400 rounded-full -left-3 sm:-left-4 top-0 border-4 border-white shadow-lg flex items-center justify-center text-white font-bold">
+              3
+            </div>
+            <div class="ml-8 sm:ml-12">
+              <h3 class="text-xl md:text-2xl font-bold text-gray-500 mb-1">
+                Laufende Unterstützung
+              </h3>
+              <p class="text-sm md:text-base text-gray-500">
+                In sha ALLAH werden wir weiterhin monatlich spenden und neue Wege finden, um Gutes zu tun.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Trennlinie zwischen den Boxen -->
+      <hr class="border-t-4 border-[#8D6E63] my-8 rounded-full">
+      
+      <!-- FAQ Section -->
+      <section class="bg-white p-6 md:p-8 rounded-2xl shadow-xl mb-12 transform transition-transform duration-300 hover:scale-[1.01]">
+        <div class="flex items-center space-x-3 mb-4">
+          <div class="bg-[#FFD54F] w-2 h-6 rounded-full"></div>
+          <h2 class="text-2xl md:text-3xl font-semibold text-[#8D6E63]">Häufig gestellte Fragen (FAQ)</h2>
+        </div>
+
+        <div class="space-y-4">
+          <!-- FAQ Item 1 -->
+          <div class="border-b border-gray-200 pb-4 faq-item">
+            <button class="flex justify-between items-center w-full focus:outline-none accordion-toggle">
+              <h3 class="font-bold text-[#8D6E63] text-lg">1. Wie kann ich an "KleineGabe-GroßerHandel" teilnehmen?</h3>
+              <span class="text-[#8D6E63] text-2xl font-bold transform transition-transform duration-300">▼</span>
+            </button>
+            <div class="accordion-content">
+              <p class="text-gray-800 text-sm md:text-base mt-2">
+                Die Teilnahme an unserer Initiative erfolgt über den Gruppen-Link, der von einem bestehenden Mitglied geteilt wird. Dort können Sie sich mit der Community verbinden, um Ihren monatlichen Beitrag von 1 € für die Bedürftigen zu leisten.
+              </p>
+            </div>
+          </div>
+
+          <!-- FAQ Item 2 -->
+          <div class="border-b border-gray-200 pb-4 faq-item">
+            <button class="flex justify-between items-center w-full focus:outline-none accordion-toggle">
+              <h3 class="font-bold text-[#8D6E63] text-lg">2. Wofür werden die gesammelten Spenden verwendet?</h3>
+              <span class="text-[#8D6E63] text-2xl font-bold transform transition-transform duration-300">▼</span>
+            </button>
+            <div class="accordion-content">
+              <p class="text-gray-800 text-sm md:text-base mt-2">
+                Die gesammelten Beiträge werden ausschließlich für die Unterstützung von Bedürftigen eingesetzt, in sha ALLAH. Der genaue Verwendungszweck wird in der Community transparent kommuniziert und dient dazu, denjenigen zu helfen, die es am dringendsten benötigen.
+              </p>
+            </div>
+          </div>
+
+          <!-- FAQ Item 3 -->
+          <div class="border-b border-gray-200 pb-4 faq-item">
+            <button class="flex justify-between items-center w-full focus:outline-none accordion-toggle">
+              <h3 class="font-bold text-[#8D6E63] text-lg">3. Was bedeutet "KleineGabe-GroßerHandel"?</h3>
+              <span class="text-[#8D6E63] text-2xl font-bold transform transition-transform duration-300">▼</span>
+            </button>
+            <div class="accordion-content">
+              <p class="text-gray-800 text-sm md:text-base mt-2">
+                Der Name unserer Initiative, "KleineGabe-GroßerHandel", verdeutlicht unser Prinzip: dass selbst ein kleiner, regelmäßiger Beitrag von 1 € eine große Wirkung erzielen kann. Es ist unser Weg, mit der Erlaubnis ALLAHs ﷻ mit wenig viel zu bewirken.
+              </p>
+            </div>
+          </div>
+
+          <!-- FAQ Item 4 -->
+          <div class="border-b border-gray-200 pb-4 faq-item">
+            <button class="flex justify-between items-center w-full focus:outline-none accordion-toggle">
+              <h3 class="font-bold text-[#8D6E63] text-lg">4. Wie werden die Projekte zur Unterstützung ausgewählt?</h3>
+              <span class="text-[#8D6E63] text-2xl font-bold transform transition-transform duration-300">▼</span>
+            </button>
+            <div class="accordion-content">
+              <p class="text-gray-800 text-sm md:text-base mt-2">
+                Die Auswahl der Projekte erfolgt in Absprache innerhalb der Community. Informationen zu den jeweiligen Spendenprojekten werden in der Community bereitgestellt.
+              </p>
+            </div>
+          </div>
+
+          <!-- FAQ Item 5 -->
+          <div class="border-b border-gray-200 pb-4 faq-item">
+            <button class="flex justify-between items-center w-full focus:outline-none accordion-toggle">
+              <h3 class="font-bold text-[#8D6E63] text-lg">5. Gibt es eine Übersicht über die gesammelten und gespendeten Beträge?</h3>
+              <span class="text-[#8D6E63] text-2xl font-bold transform transition-transform duration-300">▼</span>
+            </button>
+            <div class="accordion-content">
+              <p class="text-gray-800 text-sm md:text-base mt-2">
+                Ja, eine transparente Übersicht über die gesammelten und gespendeten Beträge wird am Ende des Monats oder auf Anfrage bereitgestellt. Dies dient dazu, die Nachvollziehbarkeit und das Vertrauen innerhalb der Community zu gewährleisten.
+              </p>
+            </div>
+          </div>
+
+          <!-- FAQ Item 6 -->
+          <div class="border-b border-gray-200 pb-4 faq-item">
+            <button class="flex justify-between items-center w-full focus:outline-none accordion-toggle">
+              <h3 class="font-bold text-[#8D6E63] text-lg">6. Was passiert, wenn ich meinen monatlichen Beitrag stoppen möchte?</h3>
+              <span class="text-[#8D6E63] text-2xl font-bold transform transition-transform duration-300">▼</span>
+            </button>
+            <div class="accordion-content">
+              <p class="text-gray-800 text-sm md:text-base mt-2">
+                Da die Teilnahme freiwillig ist, können Sie Ihren Beitrag jederzeit beenden. Geben Sie einfach einem der Ansprechpartner der Community Bescheid, um die monatliche Spende zu stoppen.
+              </p>
+            </div>
+          </div>
+
+          <!-- FAQ Item 7 -->
+          <div class="border-b border-gray-200 pb-4 faq-item">
+            <button class="flex justify-between items-center w-full focus:outline-none accordion-toggle">
+              <h3 class="font-bold text-[#8D6E63] text-lg">7. Wie wird sichergestellt, dass das Geld (Amana) korrekt verwendet wird?</h3>
+              <span class="text-[#8D6E63] text-2xl font-bold transform transition-transform duration-300">▼</span>
+            </button>
+            <div class="accordion-content">
+              <p class="text-gray-800 text-sm md:text-base mt-2">
+                Jeder gespendete Betrag ist für uns eine Amana – ein uns von ALLAH anvertrautes Gut. Die korrekte Verwendung wird durch interne Rücksprache und eine sorgfältige Dokumentation sichergestellt. Dies gewährleistet die Einhaltung unserer Verpflichtung gegenüber der Gemeinschaft.
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+        <hr class="border-t-4 border-[#8D6E63] my-8 rounded-full">
+
+        <div>
+          <h3 class="font-bold text-[#8D6E63] text-lg mb-1">Verpflichtung zur Transparenz</h3>
+          <p class="text-gray-800 text-sm md:text-base">
+            Die Verantwortlichen dieser Seite verpflichten sich, auf Anfrage von Community-Mitgliedern einen vollständigen Nachweis über die gesammelten Mittel zu erbringen. Diese Nachweispflicht dient der Sicherstellung der korrekten Buchführung und des Vertrauens in unsere Initiative.
+          </p>
+        </div>
+      </section>
+      
+      <!-- Completed Projects Section -->
+      <section class="bg-white p-6 md:p-8 rounded-2xl shadow-xl mb-12 transform transition-transform duration-300 hover:scale-[1.01]">
+        <div class="flex items-center space-x-3 mb-4">
+          <div class="bg-[#FFD54F] w-2 h-6 rounded-full"></div>
+          <h2 class="text-2xl md:text-3xl font-semibold text-[#8D6E63]">Abgeschlossene Projekte</h2>
+        </div>
+        <p class="text-gray-600 italic">
+          Bald in sha ALLAH ...
+        </p>
+      </section>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="text-center bg-[#8D6E63] text-white p-4 text-sm mt-8 rounded-t-3xl">
+      <p>Diese Website dient ausschließlich der privaten Information unserer Spenden-Community. Es werden keine Daten erhoben und keine kommerziellen Angebote betrieben.</p>
+    </footer>
+    <script>
+      // JavaScript to hide the loader screen once the page is loaded
+      window.addEventListener('load', function() {
+        const loader = document.getElementById('loader-container');
+        const content = document.getElementById('content-container');
+  
+        if (loader && content) {
+          loader.classList.add('hidden');
+          content.classList.remove('hidden');
+        }
+      });
+  
+      // JavaScript for the accordion effect with animations
+      document.querySelectorAll('.accordion-toggle').forEach(button => {
+        button.addEventListener('click', () => {
+          const content = button.nextElementSibling;
+          const faqItem = button.closest('.faq-item'); // Findet das übergeordnete Element
+  
+          // Toggelt die is-open Klasse für Symbol-Drehung und Text-Einblendung
+          button.classList.toggle('is-open');
+          content.classList.toggle('is-open');
+
+          // Fügt die Klasse für den Klick-Effekt hinzu und entfernt sie nach 0.5s
+          if (faqItem) {
+              faqItem.classList.add('is-active');
+              setTimeout(() => {
+                  faqItem.classList.remove('is-active');
+              }, 500); // Dauer der Animation
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
