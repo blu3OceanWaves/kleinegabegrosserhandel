@@ -9,147 +9,201 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --parallax-x: 0;
+            --parallax-y: 0;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1f2937, #4b5563, #6b7280);
+            background-size: 400% 400%;
+            animation: gradient-animation 20s ease infinite;
+            color: #d1d5db; /* Heller Text für dunklen Hintergrund */
+            overflow-x: hidden;
+            overscroll-behavior: none;
         }
-        .custom-loader {
-            width: 70px;
-            height: 70px;
-            background: #FFD54F;
-            border-radius: 50px;
-            -webkit-mask: radial-gradient(circle 31px at 50% calc(100% + 13px),#000 95%,#0000) top 4px left 50%,
-                radial-gradient(circle 31px,#000 95%,#0000) center,
-                radial-gradient(circle 31px at 50% -13px,#000 95%,#0000) bottom 4px left 50%,
-                linear-gradient(#000 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            -webkit-mask-repeat: no-repeat;
-            animation: cu10 1.5s infinite;
+
+        @keyframes gradient-animation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
-        @keyframes cu10 {
-            0% { -webkit-mask-size: 0 18px,0 18px,0 18px,auto; }
-            16.67% { -webkit-mask-size: 100% 18px,0 18px,0 18px,auto; }
-            33.33% { -webkit-mask-size: 100% 18px,100% 18px,0 18px,auto; }
-            50% { -webkit-mask-size: 100% 18px,100% 18px,100% 18px,auto; }
-            66.67% { -webkit-mask-size: 0 18px,100% 18px,100% 18px,auto; }
-            83.33% { -webkit-mask-size: 0 18px,0 18px,100% 18px,auto; }
-            100% { -webkit-mask-size: 0 18px,0 18px,0 18px,auto; }
+
+        /* Hintergrund-Partikel-Canvas */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.5;
         }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-        .animate-pulse-on-hover:hover {
-            animation: pulse 1.5s infinite;
+
+        /* Glassmorphism-Stil */
+        .glass-container {
+            background-color: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transform: translate3d(var(--parallax-x), var(--parallax-y), 0);
+            transition: transform 0.2s ease-out;
         }
         
-        /* --- Neue Q&A Sektion Animationen --- */
+        /* Staggered Fade-in Animation */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+            transition-delay: var(--delay);
+        }
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Ripple-Effekt */
+        .ripple-effect {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(0);
+            animation: ripple-animation 0.6s linear;
+            pointer-events: none;
+        }
+
+        @keyframes ripple-animation {
+            to {
+                transform: scale(2.5);
+                opacity: 0;
+            }
+        }
+
+        /* Timeline-Ping-Animation */
+        @keyframes pulse-animation {
+            0% { box-shadow: 0 0 0 0 rgba(255, 213, 79, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 213, 79, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 213, 79, 0); }
+        }
+
+        .timeline-pulse-dot {
+            animation: pulse-animation 2s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        /* Accordion-Effekt */
         .accordion-content {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.6s cubic-bezier(0.86, 0, 0.07, 1), padding 0.6s ease-out, transform 0.6s ease-out, opacity 0.6s ease-out;
-            opacity: 0;
-            transform: translateY(-20px) scaleY(0.9);
-            transform-origin: top;
+            transition: max-height 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            background-color: rgba(255, 255, 255, 0.02);
         }
-        
         .accordion-content.active {
-            max-height: 500px;
-            padding-top: 1.5rem;
-            padding-bottom: 1.5rem;
-            opacity: 1;
-            transform: translateY(0) scaleY(1);
+            max-height: 500px; /* Groß genug, um den Inhalt zu halten */
         }
-
         .rotate-arrow {
-            transform: rotate(180deg) scale(1.3);
-        }
-        
-        .accordion-header svg {
-            transition: transform 0.5s cubic-bezier(0.86, 0, 0.07, 1);
+            transform: rotate(180deg);
         }
 
-        .accordion-header {
-            background-color: rgba(255, 255, 255, 0.05);
-            transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+        /* Fluid Text-Animation */
+        .accordion-text {
+            opacity: 0;
+            transform: translateY(10px);
+            filter: blur(3px);
+            transition: opacity 0.5s ease-out 0.3s, transform 0.5s ease-out 0.3s, filter 0.5s ease-out 0.3s;
         }
-        .accordion-header:hover {
-            background-color: rgba(255, 213, 79, 0.2); /* Sanfter Hover-Effekt im Farbschema */
-            transform: translateY(-2px);
+
+        .accordion-content.active .accordion-text {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+        }
+
+        /* Custom Scrollbar (optional, but for a premium feel) */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #8D6E63;
+            border-radius: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
         }
     </style>
 </head>
-<body class="bg-[#FFFBEA] text-[#333] leading-relaxed">
+<body class="bg-[#1F2937] text-gray-200 leading-relaxed">
+
+    <!-- Hintergrund-Canvas für Partikel -->
+    <canvas id="particle-canvas"></canvas>
 
     <!-- Ladebildschirm -->
-    <div id="loader-container" class="fixed inset-0 bg-[#FFFBEA] flex justify-center items-center z-50">
+    <div id="loader-container" class="fixed inset-0 bg-[#1f2937] flex justify-center items-center z-50">
         <div class="custom-loader"></div>
     </div>
 
     <!-- Hauptinhalt der Website (anfangs ausgeblendet) -->
     <div id="content-container" class="hidden">
         <!-- Header Section -->
-        <header class="bg-[#FFD54F] text-center p-8 md:p-12 rounded-b-3xl shadow-lg border-b-8 border-[#8D6E63]">
-            <img src="https://i.imgur.com/hNfWmYc.png" alt="Community Logo" class="w-24 h-24 md:w-36 md:h-36 mx-auto mb-4 rounded-full border-4 border-[#8D6E63] p-1 animate-pulse-on-hover">
-            <h1 class="text-3xl md:text-5xl font-bold text-[#8D6E63] mb-2">
+        <header class="bg-transparent text-center p-8 md:p-12 mb-8 fade-in-section" style="--delay: 0s;">
+            <img src="https://i.imgur.com/hNfWmYc.png" alt="Community Logo" class="w-24 h-24 md:w-36 md:h-36 mx-auto mb-4 rounded-full border-4 border-[#8D6E63] p-1 animate-pulse-on-hover shadow-xl">
+            <h1 class="text-3xl md:text-5xl font-bold text-[#FFD54F] mb-2 drop-shadow-lg">
                 KleineGabe – GroßerHandel
             </h1>
-            <p class="text-base md:text-lg text-gray-700 uppercase font-bold text-shadow">
+            <p class="text-base md:text-lg uppercase font-bold text-[#8D6E63]">
                 Mit wenig viel bewirken
             </p>
         </header>
 
         <main class="max-w-4xl mx-auto px-4 mt-8 md:mt-12">
-            <!-- Trennlinie über den Boxen -->
-            <hr class="border-t-4 border-[#8D6E63] my-8 rounded-full">
             
             <!-- About Section -->
-            <section class="bg-white p-6 md:p-8 rounded-2xl shadow-xl mb-12 transform transition-transform duration-300 hover:scale-[1.01]">
+            <section class="glass-container p-6 md:p-8 rounded-2xl shadow-xl mb-12 fade-in-section" style="--delay: 0.2s;">
                 <div class="flex items-center space-x-3 mb-4">
                     <div class="bg-[#FFD54F] w-2 h-6 rounded-full"></div>
-                    <h2 class="text-2xl md:text-3xl font-semibold text-[#8D6E63]">Über unsere Gemeinschaft</h2>
+                    <h2 class="text-2xl md:text-3xl font-semibold text-[#FFD54F]">Über unsere Gemeinschaft</h2>
                 </div>
-                <p class="text-gray-600">
+                <p class="text-gray-400">
                     بسم الله الرحمن الرحيم
                 </p>
-                <p class="text-gray-800 my-4 text-sm md:text-base">
+                <p class="text-gray-300 my-4 text-sm md:text-base">
                     Das Gleichnis derjenigen, die ihren Besitz auf ALLAHs Weg ausgeben, ist das eines Saatkorns, das sieben Ähren wachsen läßt, (und) in jeder Ähre hundert Körner. ALLAH vervielfacht, wem Er will. Und ALLAH ist Allumfassend und Allwissend.
                 </p>
-                <p class="font-bold text-[#8D6E63] text-sm md:text-base mb-2">1€ Sadaqa:</p>
-                <p class="text-gray-800 text-sm md:text-base">
+                <p class="font-bold text-[#FFD54F] text-sm md:text-base mb-2">1€ Sadaqa:</p>
+                <p class="text-gray-300 text-sm md:text-base">
                     Wir sind eine private Gemeinschaft, die gemeinsam durch kleine, monatliche Beiträge Gutes bewirken möchte. Diese Seite dient ausschließlich zur Präsentation unserer Arbeit, damit wir transparent zeigen können, was wir gemeinsam erreichen wollen in sha ALLAH.
                 </p>
             </section>
-            
-            <!-- Trennlinie zwischen den Boxen -->
-            <hr class="border-t-4 border-[#8D6E63] my-8 rounded-full">
 
             <!-- Timeline Section -->
-            <section class="bg-white p-6 md:p-8 rounded-2xl shadow-xl mb-12 transform transition-transform duration-300 hover:scale-[1.01]">
+            <section class="glass-container p-6 md:p-8 rounded-2xl shadow-xl mb-12 fade-in-section" style="--delay: 0.4s;">
                 <div class="flex items-center space-x-3 mb-4">
                     <div class="bg-[#FFD54F] w-2 h-6 rounded-full"></div>
-                    <h2 class="text-2xl md:text-3xl font-semibold text-[#8D6E63]">Unsere Roadmap</h2>
+                    <h2 class="text-2xl md:text-3xl font-semibold text-[#FFD54F]">Unsere Roadmap</h2>
                 </div>
                 <div class="relative pl-8 sm:pl-16">
                     <!-- Timeline Bar -->
-                    <div class="absolute left-3 sm:left-7 top-0 bottom-0 w-1 bg-[#FFD54F] rounded-full"></div>
+                    <div class="absolute left-3 sm:left-7 top-0 bottom-0 w-1 bg-[#8D6E63] rounded-full"></div>
                     <!-- Timeline Item 1: Startpunkt -->
                     <div class="mb-8 relative">
-                        <div class="absolute w-6 h-6 sm:w-8 sm:h-8 bg-[#8D6E63] rounded-full -left-3 sm:-left-4 top-0 border-4 border-white shadow-lg flex items-center justify-center text-white font-bold">
-                            1
+                        <div class="absolute w-6 h-6 sm:w-8 sm:h-8 bg-[#FFD54F] rounded-full -left-3 sm:-left-4 top-0 border-4 border-[#1F2937] shadow-lg flex items-center justify-center text-white font-bold relative timeline-pulse-dot">
+                            <span class="relative z-10">1</span>
                         </div>
                         <div class="ml-8 sm:ml-12">
-                            <h3 class="text-xl md:text-2xl font-bold text-[#8D6E63] mb-1">
+                            <h3 class="text-xl md:text-2xl font-bold text-[#FFD54F] mb-1">
                                 Start der Community
                             </h3>
-                            <p class="text-sm md:text-base text-gray-700">
+                            <p class="text-sm md:text-base text-gray-300">
                                 Der offizielle Start unserer Sadaqa-Initiative ist für Rabi' al-Thani 1447 in sha ALLAH geplant. Wir beginnen mit der Sammlung der ersten monatlichen Beiträge.
                             </p>
                         </div>
                     </div>
                     <!-- Timeline Item 2: Nächste Schritte -->
                     <div class="mb-8 relative opacity-50">
-                        <div class="absolute w-6 h-6 sm:w-8 sm:h-8 bg-gray-400 rounded-full -left-3 sm:-left-4 top-0 border-4 border-white shadow-lg flex items-center justify-center text-white font-bold">
+                        <div class="absolute w-6 h-6 sm:w-8 sm:h-8 bg-gray-600 rounded-full -left-3 sm:-left-4 top-0 border-4 border-[#1F2937] shadow-lg flex items-center justify-center text-white font-bold">
                             2
                         </div>
                         <div class="ml-8 sm:ml-12">
@@ -163,7 +217,7 @@
                     </div>
                     <!-- Timeline Item 3: Zukunft -->
                     <div class="relative opacity-50">
-                        <div class="absolute w-6 h-6 sm:w-8 sm:h-8 bg-gray-400 rounded-full -left-3 sm:-left-4 top-0 border-4 border-white shadow-lg flex items-center justify-center text-white font-bold">
+                        <div class="absolute w-6 h-6 sm:w-8 sm:h-8 bg-gray-600 rounded-full -left-3 sm:-left-4 top-0 border-4 border-[#1F2937] shadow-lg flex items-center justify-center text-white font-bold">
                             3
                         </div>
                         <div class="ml-8 sm:ml-12">
@@ -178,119 +232,113 @@
                 </div>
             </section>
             
-            <!-- Trennlinie zwischen den Boxen -->
-            <hr class="border-t-4 border-[#8D6E63] my-8 rounded-full">
-            
             <!-- Completed Projects Section -->
-            <section class="bg-white p-6 md:p-8 rounded-2xl shadow-xl mb-12 transform transition-transform duration-300 hover:scale-[1.01]">
+            <section class="glass-container p-6 md:p-8 rounded-2xl shadow-xl mb-12 fade-in-section" style="--delay: 0.6s;">
                 <div class="flex items-center space-x-3 mb-4">
                     <div class="bg-[#FFD54F] w-2 h-6 rounded-full"></div>
-                    <h2 class="text-2xl md:text-3xl font-semibold text-[#8D6E63]">Abgeschlossene Projekte</h2>
+                    <h2 class="text-2xl md:text-3xl font-semibold text-[#FFD54F]">Abgeschlossene Projekte</h2>
                 </div>
-                <p class="text-gray-600 italic">
+                <p class="text-gray-400 italic">
                     Bald in sha ALLAH ...
                 </p>
             </section>
-
-            <!-- Trennlinie zwischen den Boxen -->
-            <hr class="border-t-4 border-[#8D6E63] my-8 rounded-full">
             
             <!-- FAQ Section -->
-            <section class="bg-white p-6 md:p-8 rounded-2xl shadow-xl mb-12 transform transition-transform duration-300 hover:scale-[1.01]">
+            <section class="glass-container p-6 md:p-8 rounded-2xl shadow-xl mb-12 fade-in-section" style="--delay: 0.8s;">
                 <div class="flex items-center space-x-3 mb-4">
                     <div class="bg-[#FFD54F] w-2 h-6 rounded-full"></div>
-                    <h2 class="text-2xl md:text-3xl font-semibold text-[#8D6E63]">Häufig gestellte Fragen</h2>
+                    <h2 class="text-2xl md:text-3xl font-semibold text-[#FFD54F]">Häufig gestellte Fragen</h2>
                 </div>
 
                 <div id="faq-container">
                     <!-- FAQ Item 1 -->
                     <div class="accordion-item mb-6 rounded-xl overflow-hidden shadow-md">
-                        <button class="accordion-header w-full flex justify-between items-center py-4 px-6 text-left text-lg font-bold text-[#8D6E63]">
+                        <button class="accordion-header w-full flex justify-between items-center py-4 px-6 text-left text-lg font-bold text-[#FFD54F] hover:bg-white/[0.05] transition-colors duration-300">
                             <span class="flex-grow">1. Wie kann ich an "KleineGabe-GroßerHandel" teilnehmen?</span>
-                            <svg class="h-6 w-6 text-[#8D6E63] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <svg class="h-6 w-6 text-[#8D6E63] flex-shrink-0 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
-                        <div class="accordion-content px-6 text-sm md:text-base text-gray-800">
-                            <p>Die Teilnahme an unserer Initiative erfolgt über den Gruppen-Link, der von einem bestehenden Mitglied geteilt wird. Dort können Sie sich mit der Community verbinden, um Ihren monatlichen Beitrag von 1 € für die Bedürftigen zu leisten.</p>
+                        <div class="accordion-content px-6 text-sm md:text-base text-gray-300">
+                            <p class="py-4 accordion-text">Die Teilnahme an unserer Initiative erfolgt über den Gruppen-Link, der von einem bestehenden Mitglied geteilt wird. Dort können Sie sich mit der Community verbinden, um Ihren monatlichen Beitrag von 1 € für die Bedürftigen zu leisten.</p>
                         </div>
                     </div>
                     
                     <!-- FAQ Item 2 -->
                     <div class="accordion-item mb-6 rounded-xl overflow-hidden shadow-md">
-                        <button class="accordion-header w-full flex justify-between items-center py-4 px-6 text-left text-lg font-bold text-[#8D6E63]">
+                        <button class="accordion-header w-full flex justify-between items-center py-4 px-6 text-left text-lg font-bold text-[#FFD54F] hover:bg-white/[0.05] transition-colors duration-300">
                             <span class="flex-grow">2. Wofür werden die gesammelten Spenden verwendet?</span>
-                            <svg class="h-6 w-6 text-[#8D6E63] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <svg class="h-6 w-6 text-[#8D6E63] flex-shrink-0 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
-                        <div class="accordion-content px-6 text-sm md:text-base text-gray-800">
-                            <p>Die gesammelten Beiträge werden ausschließlich für die Unterstützung von Bedürftigen eingesetzt, in sha ALLAH. Der genaue Verwendungszweck wird in der Community transparent kommuniziert in sha ALLAH.</p>
+                        <div class="accordion-content px-6 text-sm md:text-base text-gray-300">
+                            <p class="py-4 accordion-text">Die gesammelten Beiträge werden ausschließlich für die Unterstützung von Bedürftigen eingesetzt, in sha ALLAH. Der genaue Verwendungszweck wird in der Community transparent kommuniziert in sha ALLAH.</p>
                         </div>
                     </div>
 
                     <!-- FAQ Item 3 -->
                     <div class="accordion-item mb-6 rounded-xl overflow-hidden shadow-md">
-                        <button class="accordion-header w-full flex justify-between items-center py-4 px-6 text-left text-lg font-bold text-[#8D6E63]">
+                        <button class="accordion-header w-full flex justify-between items-center py-4 px-6 text-left text-lg font-bold text-[#FFD54F] hover:bg-white/[0.05] transition-colors duration-300">
                             <span class="flex-grow">3. Was bedeutet "KleineGabe-GroßerHandel"?</span>
-                            <svg class="h-6 w-6 text-[#8D6E63] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <svg class="h-6 w-6 text-[#8D6E63] flex-shrink-0 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
-                        <div class="accordion-content px-6 text-sm md:text-base text-gray-800">
-                            <p>Der Name unserer Initiative, "KleineGabe-GroßerHandel", verdeutlicht unser Prinzip: dass selbst ein kleiner, regelmäßiger Beitrag von 1 € eine große Wirkung erzielen kann. Es ist unser Weg, mit der Erlaubnis ALLAHs mit wenig viel zu bewirken.</p>
+                        <div class="accordion-content px-6 text-sm md:text-base text-gray-300">
+                            <p class="py-4 accordion-text">Der Name unserer Initiative, "KleineGabe-GroßerHandel", verdeutlicht unser Prinzip: dass selbst ein kleiner, regelmäßiger Beitrag von 1 € eine große Wirkung erzielen kann. Es ist unser Weg, mit der Erlaubnis ALLAHs mit wenig viel zu bewirken.</p>
                         </div>
                     </div>
 
                     <!-- FAQ Item 4 -->
                     <div class="accordion-item mb-6 rounded-xl overflow-hidden shadow-md">
-                        <button class="accordion-header w-full flex justify-between items-center py-4 px-6 text-left text-lg font-bold text-[#8D6E63]">
+                        <button class="accordion-header w-full flex justify-between items-center py-4 px-6 text-left text-lg font-bold text-[#FFD54F] hover:bg-white/[0.05] transition-colors duration-300">
                             <span class="flex-grow">4. Wie werden die Projekte zur Unterstützung ausgewählt?</span>
-                            <svg class="h-6 w-6 text-[#8D6E63] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <svg class="h-6 w-6 text-[#8D6E63] flex-shrink-0 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
-                        <div class="accordion-content px-6 text-sm md:text-base text-gray-800">
-                            <p>Die Auswahl der Projekte erfolgt in Absprache innerhalb der Community. Informationen zu den jeweiligen Spendenprojekten werden in der Community bereitgestellt.</p>
+                        <div class="accordion-content px-6 text-sm md:text-base text-gray-300">
+                            <p class="py-4 accordion-text">Die Auswahl der Projekte erfolgt in Absprache innerhalb der Community. Informationen zu den jeweiligen Spendenprojekten werden in der Community bereitgestellt.</p>
                         </div>
                     </div>
 
                     <!-- FAQ Item 5 -->
                     <div class="accordion-item mb-6 rounded-xl overflow-hidden shadow-md">
-                        <button class="accordion-header w-full flex justify-between items-center py-4 px-6 text-left text-lg font-bold text-[#8D6E63]">
+                        <button class="accordion-header w-full flex justify-between items-center py-4 px-6 text-left text-lg font-bold text-[#FFD54F] hover:bg-white/[0.05] transition-colors duration-300">
                             <span class="flex-grow">5. Gibt es eine Übersicht über die gesammelten und gespendeten Beträge?</span>
-                            <svg class="h-6 w-6 text-[#8D6E63] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <svg class="h-6 w-6 text-[#8D6E63] flex-shrink-0 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
-                        <div class="accordion-content px-6 text-sm md:text-base text-gray-800">
-                            <p>Ja, eine transparente Übersicht über die gesammelten und gespendeten Beträge wird am Ende des Monats oder auf Anfrage bereitgestellt. Dies dient dazu, die Nachvollziehbarkeit und das Vertrauen innerhalb der Community zu gewährleisten.</p>
+                        <div class="accordion-content px-6 text-sm md:text-base text-gray-300">
+                            <p class="py-4 accordion-text">Ja, eine transparente Übersicht über die gesammelten und gespendeten Beträge wird am Ende des Monats oder auf Anfrage bereitgestellt. Dies dient dazu, die Nachvollziehbarkeit und das Vertrauen innerhalb der Community zu gewährleisten.</p>
                         </div>
                     </div>
 
                     <!-- FAQ Item 6 -->
                     <div class="accordion-item mb-6 rounded-xl overflow-hidden shadow-md">
-                        <button class="accordion-header w-full flex justify-between items-center py-4 px-6 text-left text-lg font-bold text-[#8D6E63]">
+                        <button class="accordion-header w-full flex justify-between items-center py-4 px-6 text-left text-lg font-bold text-[#FFD54F] hover:bg-white/[0.05] transition-colors duration-300">
                             <span class="flex-grow">6. Was passiert, wenn ich meinen monatlichen Beitrag stoppen möchte?</span>
-                            <svg class="h-6 w-6 text-[#8D6E63] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <svg class="h-6 w-6 text-[#8D6E63] flex-shrink-0 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
-                        <div class="accordion-content px-6 text-sm md:text-base text-gray-800">
-                            <p>Da die Teilnahme freiwillig ist, können Sie Ihren Beitrag jederzeit beenden. Geben Sie einfach einem der Ansprechpartner der Community Bescheid, um die monatliche Spende zu stoppen.</p>
+                        <div class="accordion-content px-6 text-sm md:text-base text-gray-300">
+                            <p class="py-4 accordion-text">Da die Teilnahme freiwillig ist, können Sie Ihren Beitrag jederzeit beenden. Geben Sie einfach einem der Ansprechpartner der Community Bescheid, um die monatliche Spende zu stoppen.</p>
                         </div>
                     </div>
 
                     <!-- FAQ Item 7 -->
                     <div class="accordion-item mb-6 rounded-xl overflow-hidden shadow-md">
-                        <button class="accordion-header w-full flex justify-between items-center py-4 px-6 text-left text-lg font-bold text-[#8D6E63]">
+                        <button class="accordion-header w-full flex justify-between items-center py-4 px-6 text-left text-lg font-bold text-[#FFD54F] hover:bg-white/[0.05] transition-colors duration-300">
                             <span class="flex-grow">7. Wie wird sichergestellt, dass das Geld (Amana) korrekt verwendet wird?</span>
-                            <svg class="h-6 w-6 text-[#8D6E63] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <svg class="h-6 w-6 text-[#8D6E63] flex-shrink-0 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
-                        <div class="accordion-content px-6 text-sm md:text-base text-gray-800">
-                            <p>Jeder gespendete Betrag ist für uns eine Amana – ein uns von ALLAH anvertrautes Gut. Die korrekte Verwendung wird durch interne Rücksprache und eine sorgfältige Dokumentation sichergestellt. Dies gewährleistet die Einhaltung unserer Verpflichtung gegenüber der Gemeinschaft.</p>
+                        <div class="accordion-content px-6 text-sm md:text-base text-gray-300">
+                            <p class="py-4 accordion-text">Jeder gespendete Betrag ist für uns eine Amana – ein uns von ALLAH anvertrautes Gut. Die korrekte Verwendung wird durch interne Rücksprache und eine sorgfältige Dokumentation sichergestellt. Dies gewährleistet die Einhaltung unserer Verpflichtung gegenüber der Gemeinschaft.</p>
                         </div>
                     </div>
                 </div>
@@ -298,8 +346,8 @@
                 <hr class="border-t-4 border-[#8D6E63] my-8 rounded-full">
 
                 <div>
-                    <h3 class="font-bold text-[#8D6E63] text-lg mb-1">Verpflichtung zur Transparenz</h3>
-                    <p class="text-gray-800 text-sm md:text-base">
+                    <h3 class="font-bold text-[#FFD54F] text-lg mb-1">Verpflichtung zur Transparenz</h3>
+                    <p class="text-gray-300 text-sm md:text-base">
                         Die Verantwortlichen dieser Seite verpflichten sich, auf Anfrage von Community-Mitgliedern einen vollständigen Nachweis über die gesammelten Mittel zu erbringen.
                     </p>
                 </div>
@@ -307,46 +355,177 @@
         </main>
 
         <!-- Footer Section -->
-        <footer class="text-center bg-[#8D6E63] text-white p-4 text-sm mt-8 rounded-t-3xl">
+        <footer class="text-center bg-transparent text-gray-400 p-4 text-sm mt-8 fade-in-section" style="--delay: 1s;">
             <p>Diese Website dient ausschließlich der privaten Information unserer Spenden-Community. Es werden keine Daten erhoben und keine kommerziellen Angebote betrieben.</p>
         </footer>
     </div>
     <script>
-        // JavaScript to hide the loader screen once the page is loaded
-        window.addEventListener('load', function() {
-            const loader = document.getElementById('loader-container');
-            const content = document.getElementById('content-container');
-
-            if (loader && content) {
-                loader.classList.add('hidden');
-                content.classList.remove('hidden');
-            }
-        });
-
-        // JavaScript für den Akkordeon-Effekt mit Animationen
         document.addEventListener('DOMContentLoaded', () => {
-            const faqContainer = document.getElementById('faq-container');
 
+            // JavaScript to hide the loader screen once the page is loaded
+            window.addEventListener('load', function() {
+                const loader = document.getElementById('loader-container');
+                const content = document.getElementById('content-container');
+
+                if (loader && content) {
+                    loader.classList.add('hidden');
+                    content.classList.remove('hidden');
+                }
+            });
+
+            // Smooth Scrolling für Anker-Links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // Intersection Observer für Fade-in-Sektionen
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.2
+            };
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+            document.querySelectorAll('.fade-in-section').forEach(section => {
+                observer.observe(section);
+            });
+
+            // JavaScript für den Akkordeon-Effekt mit Animationen
+            const faqContainer = document.getElementById('faq-container');
             faqContainer.addEventListener('click', (event) => {
                 const header = event.target.closest('.accordion-header');
                 if (!header) return;
-
                 const accordionItem = header.parentElement;
                 const content = header.nextElementSibling;
                 const arrow = header.querySelector('svg');
-
-                // Schließe alle anderen geöffneten Elemente
-                document.querySelectorAll('.accordion-content.active').forEach(item => {
-                    if (item !== content) {
+                
+                // Toggle the clicked item
+                if (content.classList.contains('active')) {
+                    content.style.maxHeight = '0';
+                    content.classList.remove('active');
+                    arrow.classList.remove('rotate-arrow');
+                } else {
+                    // Close any other open items
+                    document.querySelectorAll('.accordion-content.active').forEach(item => {
+                        item.style.maxHeight = '0';
                         item.classList.remove('active');
                         item.previousElementSibling.querySelector('svg').classList.remove('rotate-arrow');
-                    }
-                });
-
-                // Schalte das angeklickte Element um
-                content.classList.toggle('active');
-                arrow.classList.toggle('rotate-arrow');
+                    });
+                    
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                    content.classList.add('active');
+                    arrow.classList.add('rotate-arrow');
+                }
             });
+
+            // Ripple-Effekt bei Klicks
+            document.querySelectorAll('button, a').forEach(el => {
+                el.addEventListener('click', function(e) {
+                    const rect = el.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const ripple = document.createElement('span');
+                    ripple.classList.add('ripple-effect');
+                    ripple.style.left = `${x}px`;
+                    ripple.style.top = `${y}px`;
+                    el.style.position = 'relative';
+                    el.style.overflow = 'hidden';
+                    this.appendChild(ripple);
+                    setTimeout(() => ripple.remove(), 600);
+                });
+            });
+
+            // Parallax-Effekt und Partikel-System
+            const canvas = document.getElementById('particle-canvas');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            const numParticles = 100;
+            const mouse = { x: 0, y: 0 };
+            const mainContent = document.getElementById('content-container');
+            const parallaxScale = 0.05;
+
+            // Debounce-Funktion für Performance
+            const debounce = (func, delay) => {
+                let timeout;
+                return (...args) => {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func(...args), delay);
+                };
+            };
+            
+            function onMouseMove(e) {
+                mouse.x = e.clientX / window.innerWidth - 0.5;
+                mouse.y = e.clientY / window.innerHeight - 0.5;
+                document.documentElement.style.setProperty('--parallax-x', `${mouse.x * 20}px`);
+                document.documentElement.style.setProperty('--parallax-y', `${mouse.y * 20}px`);
+            }
+            const debouncedOnMouseMove = debounce(onMouseMove, 10);
+            window.addEventListener('mousemove', debouncedOnMouseMove);
+            window.addEventListener('touchmove', (e) => {
+                const touch = e.touches[0];
+                onMouseMove({ clientX: touch.clientX, clientY: touch.clientY });
+            });
+
+            function Particle() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = Math.random() * 0.5 - 0.25;
+                this.speedY = Math.random() * 0.5 - 0.25;
+                this.opacity = Math.random() * 0.5 + 0.1;
+            }
+
+            Particle.prototype.update = function() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x > canvas.width || this.x < 0) this.speedX *= -1;
+                if (this.y > canvas.height || this.y < 0) this.speedY *= -1;
+            };
+
+            Particle.prototype.draw = function() {
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            };
+
+            function initParticles() {
+                particles = [];
+                for (let i = 0; i < numParticles; i++) {
+                    particles.push(new Particle());
+                }
+            }
+
+            function animateParticles() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                for (let i = 0; i < particles.length; i++) {
+                    particles[i].update();
+                    particles[i].draw();
+                }
+                requestAnimationFrame(animateParticles);
+            }
+
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                initParticles();
+            }
+
+            window.addEventListener('resize', debounce(resizeCanvas, 100));
+            resizeCanvas();
+            animateParticles();
         });
     </script>
 </body>
