@@ -92,7 +92,7 @@
             animation: pulse-animation 2s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
         
-        /* Accordion-Effekt */
+        /* Akkordeon-Effekt */
         .accordion-content {
             max-height: 0;
             overflow: hidden;
@@ -119,8 +119,55 @@
             transform: translateY(0);
             filter: blur(0);
         }
+        
+        /* Spezifischer Stil für die "Aufruf"-Sektion */
+        .special-callout-container {
+            background: radial-gradient(circle at center, rgba(255, 213, 79, 0.08) 0%, rgba(255, 213, 79, 0.02) 40%, rgba(255, 255, 255, 0.05) 100%);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 213, 79, 0.4);
+            box-shadow: 0 0 20px rgba(255, 213, 79, 0.2);
+            transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+            animation: glow-pulse 5s infinite ease-in-out;
+        }
 
-        /* Custom Scrollbar (optional, but for a premium feel) */
+        @keyframes glow-pulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 213, 79, 0.2); }
+            50% { box-shadow: 0 0 30px rgba(255, 213, 79, 0.5); }
+        }
+
+        /* High-End Text-Animation */
+        @keyframes text-fall-in {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+                filter: blur(5px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+                filter: blur(0);
+            }
+        }
+
+        .text-word-animated {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(-20px);
+            filter: blur(5px);
+        }
+
+        .text-word-animated.in-view {
+            animation: text-fall-in 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+        
+        /* Neuer Stil für die "Aufruf"-Texte ohne die Linie */
+        .callout-text-item {
+            position: relative;
+            padding-bottom: 1rem; /* Anpassung, da die Linie entfernt wurde */
+        }
+
+        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 10px;
         }
@@ -232,6 +279,20 @@
                 </div>
             </section>
             
+            <!-- Aufruf Section -->
+            <section class="special-callout-container p-6 md:p-8 rounded-2xl shadow-xl mb-12" id="callout-section">
+                <div class="flex items-center space-x-3 mb-4">
+                    <div class="bg-[#FFD54F] w-2 h-6 rounded-full"></div>
+                    <h2 class="text-2xl md:text-3xl font-semibold text-[#FFD54F]">Ein Aufruf</h2>
+                </div>
+                <p class="text-gray-300 mb-6 italic">
+                    Einige ausgewählte Worte aus dem Qur'an und der Sunnah, die zur Spende ermutigen:
+                </p>
+                <div class="space-y-8 md:space-y-10" id="callout-texts">
+                    <!-- Texte werden dynamisch von JS befüllt -->
+                </div>
+            </section>
+
             <!-- Completed Projects Section -->
             <section class="glass-container p-6 md:p-8 rounded-2xl shadow-xl mb-12 fade-in-section" style="--delay: 0.6s;">
                 <div class="flex items-center space-x-3 mb-4">
@@ -244,7 +305,7 @@
             </section>
             
             <!-- FAQ Section -->
-            <section class="glass-container p-6 md:p-8 rounded-2xl shadow-xl mb-12 fade-in-section" style="--delay: 0.8s;">
+            <section class="glass-container p-6 md:p-8 rounded-2xl shadow-xl mb-12 fade-in-section" style="--delay: 1.0s;">
                 <div class="flex items-center space-x-3 mb-4">
                     <div class="bg-[#FFD54F] w-2 h-6 rounded-full"></div>
                     <h2 class="text-2xl md:text-3xl font-semibold text-[#FFD54F]">Häufig gestellte Fragen</h2>
@@ -355,18 +416,51 @@
         </main>
 
         <!-- Footer Section -->
-        <footer class="text-center bg-transparent text-gray-400 p-4 text-sm mt-8 fade-in-section" style="--delay: 1s;">
+        <footer class="text-center bg-transparent text-gray-400 p-4 text-sm mt-8 fade-in-section" style="--delay: 1.2s;">
             <p>Diese Website dient ausschließlich der privaten Information unserer Spenden-Community. Es werden keine Daten erhoben und keine kommerziellen Angebote betrieben.</p>
         </footer>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            const calloutData = [
+                {
+                    text: 'O die ihr glaubt, gebt aus von dem, womit Wir euch versorgt haben, bevor ein Tag kommt, an dem es keinen Verkauf, keine Freundschaft und keine Fürsprache gibt! Die Ungläubigen sind die Ungerechten.',
+                    source: '[Qur\'an - 2:254]'
+                },
+                {
+                    text: 'Diejenigen, die ihren Besitz auf Allahs Weg ausgeben und hierauf dem, was sie ausgegeben haben, weder Vorhaltungen noch Beleidigungen nachfolgen lassen, die haben ihren Lohn bei ihrem Herrn, und keine Furcht soll über sie kommen, noch sollen sie traurig sein.',
+                    source: '[Qur\'an - 2:262]'
+                },
+                {
+                    text: 'Glaubt an Allah und Seinen Gesandten und gebt aus von dem, worüber Er euch zu Statthaltern eingesetzt hat. Diejenigen von euch, die glauben und ausgeben, für sie wird es großen Lohn geben.',
+                    source: '[Qur\'an: 57:7]'
+                },
+                {
+                    text: 'Und was ist mit euch, daß ihr nicht auf Allahs Weg ausgeben sollt, wo doch das Erbe der Himmel und der Erde Allah gehört.',
+                    source: '[Qur\'an - 57:10]'
+                },
+                {
+                    text: '„Wohlstand wird nicht durch Spenden verringert, und Allah mehrt einem Diener durch Vergebung nur an Ehre, und niemand demütigt sich vor Allah, außer dass Allah ihn erhöht.“',
+                    source: '[Sahih Muslim - 2588]'
+                },
+                {
+                    text: '„Allah hat gesagt: \'Gib aus, o Sohn Adams, und Ich werde für dich ausgeben.\'“',
+                    source: '[Sahih al-Bukhari - 5352]'
+                }
+            ];
+
+            const calloutContainer = document.getElementById('callout-texts');
+            const canvas = document.getElementById('particle-canvas');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            const numParticles = 100;
+            const mouse = { x: 0, y: 0 };
+            const mainContent = document.getElementById('content-container');
 
             // JavaScript to hide the loader screen once the page is loaded
             window.addEventListener('load', function() {
                 const loader = document.getElementById('loader-container');
                 const content = document.getElementById('content-container');
-
                 if (loader && content) {
                     loader.classList.add('hidden');
                     content.classList.remove('hidden');
@@ -397,9 +491,47 @@
                     }
                 });
             }, observerOptions);
+
             document.querySelectorAll('.fade-in-section').forEach(section => {
                 observer.observe(section);
             });
+
+            // Dynamisches Füllen der Aufruf-Sektion und Animation
+            const calloutObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const calloutItems = entry.target.querySelectorAll('.callout-text-item');
+                        calloutItems.forEach((item, itemIndex) => {
+                            const words = item.querySelector('.text-content').textContent.trim().split(/\s+/);
+                            const html = words.map(word => `<span class="text-word-animated">${word}</span>`).join(' ');
+                            
+                            item.querySelector('.text-content').innerHTML = html;
+                            
+                            const animatedWords = item.querySelectorAll('.text-word-animated');
+                            animatedWords.forEach((wordSpan, index) => {
+                                wordSpan.style.animationDelay = `${(itemIndex * 0.5) + (index * 0.05)}s`;
+                                wordSpan.classList.add('in-view');
+                            });
+                        });
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            // Füllt die Texte vor dem Observieren, um sie zu animieren
+            function populateCalloutSection() {
+                calloutData.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'callout-text-item';
+                    div.dataset.source = item.source; // Speichert die Quelle im Dataset
+                    div.innerHTML = `<p class="text-content text-sm md:text-base text-gray-200">${item.text}</p>
+                                     <p class="text-xs md:text-sm text-gray-400 mt-2 font-semibold italic">${item.source}</p>`;
+                    calloutContainer.appendChild(div);
+                });
+            }
+
+            populateCalloutSection();
+            calloutObserver.observe(document.getElementById('callout-section'));
 
             // JavaScript für den Akkordeon-Effekt mit Animationen
             const faqContainer = document.getElementById('faq-container');
@@ -410,13 +542,11 @@
                 const content = header.nextElementSibling;
                 const arrow = header.querySelector('svg');
                 
-                // Toggle the clicked item
                 if (content.classList.contains('active')) {
                     content.style.maxHeight = '0';
                     content.classList.remove('active');
                     arrow.classList.remove('rotate-arrow');
                 } else {
-                    // Close any other open items
                     document.querySelectorAll('.accordion-content.active').forEach(item => {
                         item.style.maxHeight = '0';
                         item.classList.remove('active');
@@ -446,37 +576,7 @@
                 });
             });
 
-            // Parallax-Effekt und Partikel-System
-            const canvas = document.getElementById('particle-canvas');
-            const ctx = canvas.getContext('2d');
-            let particles = [];
-            const numParticles = 100;
-            const mouse = { x: 0, y: 0 };
-            const mainContent = document.getElementById('content-container');
-            const parallaxScale = 0.05;
-
-            // Debounce-Funktion für Performance
-            const debounce = (func, delay) => {
-                let timeout;
-                return (...args) => {
-                    clearTimeout(timeout);
-                    timeout = setTimeout(() => func(...args), delay);
-                };
-            };
-            
-            function onMouseMove(e) {
-                mouse.x = e.clientX / window.innerWidth - 0.5;
-                mouse.y = e.clientY / window.innerHeight - 0.5;
-                document.documentElement.style.setProperty('--parallax-x', `${mouse.x * 20}px`);
-                document.documentElement.style.setProperty('--parallax-y', `${mouse.y * 20}px`);
-            }
-            const debouncedOnMouseMove = debounce(onMouseMove, 10);
-            window.addEventListener('mousemove', debouncedOnMouseMove);
-            window.addEventListener('touchmove', (e) => {
-                const touch = e.touches[0];
-                onMouseMove({ clientX: touch.clientX, clientY: touch.clientY });
-            });
-
+            // Partikel-System Funktionen
             function Particle() {
                 this.x = Math.random() * canvas.width;
                 this.y = Math.random() * canvas.height;
@@ -500,28 +600,51 @@
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                 ctx.fill();
             };
-
+            
             function initParticles() {
                 particles = [];
                 for (let i = 0; i < numParticles; i++) {
                     particles.push(new Particle());
                 }
             }
-
+            
             function animateParticles() {
+                requestAnimationFrame(animateParticles);
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 for (let i = 0; i < particles.length; i++) {
                     particles[i].update();
                     particles[i].draw();
                 }
-                requestAnimationFrame(animateParticles);
             }
-
+            
             function resizeCanvas() {
                 canvas.width = window.innerWidth;
                 canvas.height = window.innerHeight;
                 initParticles();
             }
+
+            // Parallax-Effekt und Partikel-System
+            const debounce = (func, delay) => {
+                let timeout;
+                return (...args) => {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func(...args), delay);
+                };
+            };
+            
+            function onMouseMove(e) {
+                mouse.x = e.clientX / window.innerWidth - 0.5;
+                mouse.y = e.clientY / window.innerHeight - 0.5;
+                document.documentElement.style.setProperty('--parallax-x', `${mouse.x * 20}px`);
+                document.documentElement.style.setProperty('--parallax-y', `${mouse.y * 20}px`);
+            }
+
+            const debouncedOnMouseMove = debounce(onMouseMove, 10);
+            window.addEventListener('mousemove', debouncedOnMouseMove);
+            window.addEventListener('touchmove', (e) => {
+                const touch = e.touches[0];
+                onMouseMove({ clientX: touch.clientX, clientY: touch.clientY });
+            });
 
             window.addEventListener('resize', debounce(resizeCanvas, 100));
             resizeCanvas();
