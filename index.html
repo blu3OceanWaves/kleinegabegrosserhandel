@@ -166,7 +166,7 @@
             position: relative;
             padding-bottom: 1rem; /* Anpassung, da die Linie entfernt wurde */
         }
-
+        
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 10px;
@@ -190,16 +190,28 @@
                 box-shadow: 0 0 20px rgba(255, 213, 79, 0.8), 0 0 30px rgba(255, 213, 79, 0.5);
             }
         }
+        
+        /* Neuer Toast-Stil für die Benachrichtigung */
+        .toast {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
 
-        .glow-button {
-            border: 2px solid #8D6E63;
-            background-color: transparent;
-            transition: background-color 0.3s ease-out, box-shadow 0.3s ease-out;
+        /* Lade-Animation */
+        .custom-loader {
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          border: 5px solid #E0E0E0;
+          border-top-color: #8D6E63;
+          animation: spin 1s linear infinite;
         }
         
-        .glow-button:hover {
-            background-color: rgba(255, 213, 79, 0.2);
-            animation: glow-pulse-button 3s infinite ease-in-out;
+        @keyframes spin {
+          to {
+            transform: rotate(360deg);
+          }
         }
     </style>
 </head>
@@ -441,18 +453,28 @@
                     <div class="bg-[#FFD54F] w-2 h-6 rounded-full"></div>
                     <h2 class="text-2xl md:text-3xl font-semibold text-[#FFD54F]">Teile die Initiative</h2>
                 </div>
-                <blockquote class="border-l-4 border-[#8D6E63] pl-4 text-gray-300 italic mb-6">
-                    <p class="mb-2">„[...] Wer auf Gutes hinweist, erhält den gleichen Lohn wie derjenige, der es tut."</p>
+                <blockquote class="pl-4 text-gray-300 italic mb-6">
+                    <p class="mb-2 text-[#FFD54F]">„[...] Wer auf Gutes hinweist, erhält den gleichen Lohn wie derjenige, der es tut."</p>
                     <footer class="text-sm font-semibold text-[#FFD54F]">[Sahih Muslim - 1893]</footer>
                 </blockquote>
                 <p class="text-gray-300 mb-4 text-sm md:text-base">
                     Hilf uns, Gutes zu verbreiten. Teile diese Seite mit deinen Freunden und deiner Familie.
                 </p>
-                <button id="copy-link-btn" class="glow-button relative overflow-hidden w-full md:w-auto px-6 py-3 rounded-lg text-white font-bold text-lg shadow-lg">
+                <button id="copy-link-btn" class="w-full md:w-auto px-6 py-3 rounded-lg text-white font-bold text-lg shadow-lg bg-white/[0.1] hover:bg-white/[0.2] transition-colors duration-300">
                     Link kopieren
                 </button>
             </section>
         </main>
+
+        <!-- Toast-Nachricht für kopierten Link -->
+        <div id="toast-message" class="fixed bottom-8 left-1/2 -translate-x-1/2 p-4 rounded-lg shadow-lg transition-all duration-500 ease-in-out opacity-0 translate-y-4 pointer-events-none z-50 toast">
+            <div class="flex items-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-green-400">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="text-white text-sm font-semibold">Link wurde kopiert!</span>
+            </div>
+        </div>
 
         <!-- Footer Section -->
         <footer class="text-center bg-transparent text-gray-400 p-4 text-sm mt-8 fade-in-section" style="--delay: 1.2s;">
@@ -689,8 +711,10 @@
             resizeCanvas();
             animateParticles();
 
-            // Link kopieren Funktionalität
+            // Link kopieren Funktionalität mit Toast-Nachricht
             const copyButton = document.getElementById('copy-link-btn');
+            const toastMessage = document.getElementById('toast-message');
+
             copyButton.addEventListener('click', () => {
                 const textToCopy = "Eine Initiative die mit wenig viel erreichen will in sha ALLAH -- KleineGabe-GroßerHandel: https://blu3oceanwaves.github.io/kleinegabegrosserhandel/";
                 
@@ -703,31 +727,22 @@
                 
                 try {
                     document.execCommand('copy');
-                    showMessage("Link kopiert!", "success");
+                    showToast();
                 } catch (err) {
-                    showMessage("Kopieren fehlgeschlagen.", "error");
+                    // Fallback, falls execCommand nicht funktioniert
+                    console.error("Kopieren fehlgeschlagen.", err);
                 }
                 document.body.removeChild(tempInput);
             });
 
-            // Benutzerdefinierte Benachrichtigungsfunktion
-            function showMessage(message, type) {
-                const messageBox = document.createElement('div');
-                messageBox.textContent = message;
-                messageBox.className = `fixed bottom-4 left-1/2 -translate-x-1/2 px-6 py-3 rounded-lg text-white text-sm font-semibold shadow-lg transition-transform duration-300 ease-out z-50 transform-gpu`;
+            // Funktion zum Anzeigen und Verstecken der Toast-Nachricht
+            function showToast() {
+                toastMessage.classList.remove('opacity-0', 'translate-y-4');
+                toastMessage.classList.add('opacity-100', 'translate-y-0');
                 
-                if (type === "success") {
-                    messageBox.classList.add('bg-green-600');
-                } else {
-                    messageBox.classList.add('bg-red-600');
-                }
-
-                document.body.appendChild(messageBox);
-
                 setTimeout(() => {
-                    messageBox.style.transform = `translateY(100%) translateX(-50%)`;
-                    messageBox.style.opacity = '0';
-                    setTimeout(() => messageBox.remove(), 300);
+                    toastMessage.classList.remove('opacity-100', 'translate-y-0');
+                    toastMessage.classList.add('opacity-0', 'translate-y-4');
                 }, 3000);
             }
         });
